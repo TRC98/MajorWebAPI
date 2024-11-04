@@ -3,12 +3,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Core.Model;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAPI.Core.Service
 {
@@ -19,6 +23,17 @@ namespace WebAPI.Core.Service
         {
             _Configuration = cnfiguration;
         }
+
+        public async Task<string> GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
         public async Task<string> GenerateToken(UserModel user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -42,9 +57,56 @@ namespace WebAPI.Core.Service
 
         }
 
+        public async Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token)
+        {
+            try
+            {
+                /*
+                    The function GetPrincipalFromExpiredToken is designed to retrieve the claims(principal)
+                    from an expired JWT token.This is typically used in token refresh scenarios where you want to validate
+                    the identity and claims of a user without requiring the token to be unexpired. Here’s a breakdown of 
+                    what each part of the function does
+                */
+
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = false, // Ignore token expiry for the validation process
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Configuration["JWT:Key"])),
+                    ValidIssuer = _Configuration["JWT:Issuer"],
+                    ValidAudience = _Configuration["JWT:Audience"]
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                /*
+                 ValidateToken method verifies the token against the TokenValidationParameters, and if valid, returns a ClaimsPrincipal representing the user
+                 */
+                var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+
+                /*   After validation, the function checks if the token is a JwtSecurityToken and if it uses the HmacSha256 algorithm   */
+
+                if (securityToken is JwtSecurityToken jwtToken && jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return principal;
+                }
+                throw new SecurityTokenException("Invalid token");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                return null;
+            }
+            
+        }
+
         public Task<IActionResult> Login(LoginModel loginModel)
         {
             throw new NotImplementedException();
         }
     }
+
 }

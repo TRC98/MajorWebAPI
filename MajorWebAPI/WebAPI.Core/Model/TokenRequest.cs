@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Core.Model
 {
-    public class AuthResponse
+    public class TokenRequest
     {
-        public string UserId { get; set; }
-        public string Username { get; set; }
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Core.Model;
@@ -12,5 +13,7 @@ namespace WebAPI.Core.Service
     {
         Task<IActionResult> Login(LoginModel loginModel);
         Task<string> GenerateToken(UserModel user);
+        Task<string> GenerateRefreshToken();
+        Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token);
     }
 }
