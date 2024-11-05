@@ -23,7 +23,9 @@ namespace MajorWebAPI.Extensions
         }
         public static IServiceCollection InjectDependancies(this IServiceCollection services)
         {
-            services.AddScoped<IDataAccessService, DataAccessService>(ctx => new DataAccessService(_Configuration.GetConnectionString("SqlConnectionString")));
+            services.AddScoped<DapperContext>(ctx => new DapperContext(_Configuration.GetConnectionString("SqlConnectionString")));
+            //services.AddScoped<typeof(IDataAccessService<>), typeof(DataAccessService<>)> (ctx => new DataAccessService(_Configuration.GetConnectionString("SqlConnectionString")));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IAuthService, AuthService>();
 
             return services;
