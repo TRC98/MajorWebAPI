@@ -3,18 +3,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPI.Core.Entity;
 using WebAPI.Core.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using WebAPI.Core.Service;
 
-namespace WebAPI.Core.Service
+namespace WebAPI.Services
 {
     public class AuthService : IAuthService
     {
@@ -34,7 +33,7 @@ namespace WebAPI.Core.Service
             }
         }
 
-        public async Task<string> GenerateToken(UserModel user)
+        public async Task<string> GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtSettings = _Configuration.GetSection("JWT");
@@ -45,7 +44,7 @@ namespace WebAPI.Core.Service
                 audience: jwtSettings["Audience"],
                 claims: new Claim[]
                         {
-                            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                             new Claim(ClaimTypes.Role, user.Role.ToString()),
                             // Add more claims as needed
                         },
@@ -100,7 +99,7 @@ namespace WebAPI.Core.Service
                 throw ex;
                 return null;
             }
-            
+
         }
 
         public Task<IActionResult> Login(LoginModel loginModel)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPI.Core.Entity;
 using WebAPI.Core.Model;
 
 namespace WebAPI.Core.Service
@@ -12,7 +13,7 @@ namespace WebAPI.Core.Service
     public interface IAuthService
     {
         Task<IActionResult> Login(LoginModel loginModel);
-        Task<string> GenerateToken(UserModel user);
+        Task<string> GenerateToken(User user);
         Task<string> GenerateRefreshToken();
         Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token);
     }

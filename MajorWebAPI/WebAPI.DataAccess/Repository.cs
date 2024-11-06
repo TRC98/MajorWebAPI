@@ -76,5 +76,35 @@ namespace WebAPI.DataAccess
                 throw;
             }
         }
+
+        public async Task<TEntity> GetEntityBySPAsync(string storedProcedureName, Dictionary<string, Tuple<string, DbType, ParameterDirection>> parameters)
+        {
+            DynamicParameters dynamicParameters = new DynamicParameters();
+
+            foreach (KeyValuePair<string, Tuple<string, DbType, ParameterDirection>> entry in parameters)
+            {
+                if (entry.Value.Item2 == DbType.Guid)
+                {
+                    Guid guid = new Guid(entry.Value.Item1);
+                    dynamicParameters.Add(entry.Key, guid, DbType.Guid, entry.Value.Item3);
+                }
+                else
+                {
+                    dynamicParameters.Add(entry.Key, entry.Value.Item1, entry.Value.Item2, entry.Value.Item3);
+                }
+            }
+
+            using (var connection = _dapperContext.GetConnectiion())
+            {
+                connection.Open();
+
+                var result = await connection.QueryAsync<TEntity>(
+                  storedProcedureName,
+                  param: dynamicParameters,
+                  commandType: CommandType.StoredProcedure);
+
+                return result.FirstOrDefault();
+            }
+        }
     }
 }

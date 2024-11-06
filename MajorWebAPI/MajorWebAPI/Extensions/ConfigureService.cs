@@ -2,8 +2,12 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Core.DataAccess;
+using WebAPI.Core.EntitiManagmentService;
+using WebAPI.Core.Model;
 using WebAPI.Core.Service;
 using WebAPI.DataAccess;
+using WebAPI.Services;
+using WebAPI.Services.Services;
 
 namespace MajorWebAPI.Extensions
 {
@@ -23,10 +27,20 @@ namespace MajorWebAPI.Extensions
         }
         public static IServiceCollection InjectDependancies(this IServiceCollection services)
         {
-            services.AddScoped<DapperContext>(ctx => new DapperContext(_Configuration.GetConnectionString("SqlConnectionString")));
+            services.AddSingleton<DapperContext>(ctx => new DapperContext(_Configuration.GetConnectionString("SqlConnectionString")));
             //services.AddScoped<typeof(IDataAccessService<>), typeof(DataAccessService<>)> (ctx => new DataAccessService(_Configuration.GetConnectionString("SqlConnectionString")));
+            services.AddScoped<IDataAccessLayer, DataAccessLayer>(ctx =>
+            {
+                var dbcontext = new DapperContext(_Configuration.GetConnectionString("SqlConnectionString"));
+                return new DataAccessLayer(dbcontext);
+            });
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient<IWebApiResponceService, WebAPICommonResponse>();
+            
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IUserManagementService, UserManagementService>();
+
 
             return services;
         }

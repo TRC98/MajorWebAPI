@@ -12,5 +12,7 @@ namespace WebAPI.Core.DataAccess
         Task<TEntity> GetAsync(string id);
         IEnumerable<TEntity> GetEntitiesBySP(string storedProcedureName, Dictionary<string, Tuple<string, DbType, ParameterDirection>> parameters);
         Task<IEnumerable<TEntity>> GetUsersAsync();
+        Task<TEntity> GetEntityBySPAsync(string storedProcedureName, Dictionary<string, Tuple<string, DbType, ParameterDirection>> parameters);
+
     }
 }
