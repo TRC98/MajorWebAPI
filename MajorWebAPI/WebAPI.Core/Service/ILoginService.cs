@@ -11,5 +11,7 @@ namespace WebAPI.Core.Service
     public interface ILoginService
     {
         Task<WebAPICommonResponse> UserLogin(LoginModel loginModel);
+        Task<WebAPICommonResponse> RefreshToken(TokenRequest loginModel);
+
     }
 }

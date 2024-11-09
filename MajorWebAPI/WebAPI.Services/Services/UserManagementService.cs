@@ -20,6 +20,21 @@ namespace WebAPI.Services.Services
             _userRepository = repository;
             _dataAccessLayer = dataAccessLayer;
         }
+
+        public async Task<User> GetUserbyId(string id)
+        {
+            try
+            {
+                var user = await _dataAccessLayer.Repository<User>().GetAsync(id);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw ex;
+            }
+        }
+
         public async Task<User> GetUserbyUaerName(string name)
         {
             try
@@ -37,6 +52,11 @@ namespace WebAPI.Services.Services
                 return null;
                 throw ex;
             }
+        }
+
+        public Task<User> GetUserbyUserName(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

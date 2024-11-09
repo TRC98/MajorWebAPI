@@ -28,12 +28,14 @@ namespace WebAPI.Services
             _authService = authService;
             _userManagementService = userManagementService;
         }
+
+
         public async Task<WebAPICommonResponse> UserLogin(LoginModel loginModel)
         {
             try
             {
 
-                User user = await _userManagementService.GetUserbyUaerName(loginModel.UserName);
+                User user = await _userManagementService.GetUserbyUserName(loginModel.UserName);
 
                 if (user.UserName != loginModel.UserName)
                 {
@@ -62,6 +64,19 @@ namespace WebAPI.Services
                     RefreshToken = newRefreshToken
                 };
                 return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Success, "Successfully Loged", responce);
+            }
+            catch (Exception ex)
+            {
+                return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Exception, "Internal Error", null);
+                throw ex;
+            }
+        }
+
+        public async Task<WebAPICommonResponse> RefreshToken(TokenRequest loginModel)
+        {
+            try
+            {
+
             }
             catch (Exception ex)
             {

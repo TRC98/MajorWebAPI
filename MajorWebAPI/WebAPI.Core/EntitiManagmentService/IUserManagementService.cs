@@ -9,6 +9,7 @@ namespace WebAPI.Core.EntitiManagmentService
 {
     public interface IUserManagementService
     {
-        Task<User> GetUserbyUaerName(string name);
+        Task<User> GetUserbyUserName(string name);
+        Task<User> GetUserbyId(string id);
     }
 }
