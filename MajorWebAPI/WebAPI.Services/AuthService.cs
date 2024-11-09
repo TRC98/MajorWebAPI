@@ -61,6 +61,8 @@ namespace WebAPI.Services
                         {
                             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                             new Claim(ClaimTypes.Role, user.Role.ToString()),
+                            new Claim(ClaimTypes.Name,user.UserName),
+                            new Claim("DateOfBirth","2000-01-21")
                             // Add more claims as needed
                         },
                 expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["ExpiryMinutes"])),

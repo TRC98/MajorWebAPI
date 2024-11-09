@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebAPI.Core.DataAccess;
@@ -65,6 +66,24 @@ namespace MajorWebAPI.Extensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            // We can add policies with using claims like below to authorization. to Activate this policy need to add in controller level
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PolicyOne", policy =>
+                {
+                    policy.RequireRole("User")
+                    .RequireClaim("Designation", "SE");
+                });
+
+                // We can add custom Authorization requirements
+                options.AddPolicy("AgeRestriction", policy =>
+                {
+                    policy.Requirements.Add(new AgeRestrictionRequirement(21));
+                });
+            });
+            // Need to registers the handler so that ASP.NET Core can inject it when processing authorization for the policy
+            services.AddSingleton<IAuthorizationHandler, AgeRestrictionHndler>();
 
             return services;
         }

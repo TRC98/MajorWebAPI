@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MajorWebAPI.Controllers
 {
@@ -20,9 +21,11 @@ namespace MajorWebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AgeRestriction")]
+        //[Authorize(Roles="User")]
         public IEnumerable<WeatherForecast> Get()
         {
+            //var value = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value; // we can access claims in controller level like this
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
