@@ -26,6 +26,24 @@ namespace WebAPI.DataAccess
                 return await connection.GetAsync<TEntity>(id);
             }
         }
+
+        public async Task<long> InsertAsync(TEntity Entity)
+        {
+            try
+            {
+                long id;
+                using(var connection = _dapperContext.GetConnectiion())
+                {
+                    connection.Open();
+                    id = await connection.InsertAsync(Entity);
+                }
+                return id;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
         public async Task<IEnumerable<TEntity>> GetUsersAsync()
         {
             try
@@ -106,5 +124,6 @@ namespace WebAPI.DataAccess
                 return result.FirstOrDefault();
             }
         }
+
     }
 }

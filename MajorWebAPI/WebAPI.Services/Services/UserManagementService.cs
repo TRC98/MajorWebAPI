@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using WebAPI.Core.DataAccess;
 using WebAPI.Core.EntitiManagmentService;
 using WebAPI.Core.Entity;
@@ -35,7 +36,7 @@ namespace WebAPI.Services.Services
             }
         }
 
-        public async Task<User> GetUserbyUaerName(string name)
+        public async Task<User> GetUserbyUserName(string name)
         {
             try
             {
@@ -54,9 +55,23 @@ namespace WebAPI.Services.Services
             }
         }
 
-        public Task<User> GetUserbyUserName(string name)
+        public async Task<UserModel> GetUserRefreshTokenId(string id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new Dictionary<string, Tuple<string, DbType, ParameterDirection>>
+                {
+                   { "UserId", Tuple.Create(id.ToString(), DbType.String, ParameterDirection.Input) }
+                };
+                var user = await _dataAccessLayer.Repository<UserModel>().GetEntityBySPAsync("[dbo].[GetUserRefreshTokenbyUserId]", parameters);
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw ex;
+            }
         }
     }
 }

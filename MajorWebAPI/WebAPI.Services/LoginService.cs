@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Core;
@@ -54,7 +55,7 @@ namespace WebAPI.Services
 
                 // Generate token
                 var token = await _authService.GenerateToken(user);
-                var newRefreshToken = await _authService.GenerateRefreshToken();
+                var newRefreshToken = await _authService.GenerateRefreshToken(user.Id);
 
                 // Return the token
                 var responce = new AuthResponse
@@ -76,7 +77,29 @@ namespace WebAPI.Services
         {
             try
             {
+                var principal = await _authService.GetPrincipalFromExpiredToken(loginModel.AccessToken);
+                var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+                var user = await _userManagementService.GetUserRefreshTokenId(userId);
+                var userTwo = await _userManagementService.GetUserbyId(userId);
+
+                if (user == null || user.RefreshToken != loginModel.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                {
+                    return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Unathorized, "Invalid Token", null);
+                }
+
+                var newAccessToken = await _authService.GenerateToken(userTwo);
+                var newRefreshToken = await _authService.GenerateRefreshToken(user.UserId);
+
+                var responce = new AuthResponse
+                {
+                    UserId = user.UserId.ToString(),
+                    Token = newAccessToken,
+                    RefreshToken = newRefreshToken
+                };
+                //_userService.UpdateUser(user);
+
+                return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Success, "Successfully Generate Refresh Token", responce);
             }
             catch (Exception ex)
             {

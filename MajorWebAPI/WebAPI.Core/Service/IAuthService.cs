@@ -14,7 +14,7 @@ namespace WebAPI.Core.Service
     {
         Task<IActionResult> Login(LoginModel loginModel);
         Task<string> GenerateToken(User user);
-        Task<string> GenerateRefreshToken();
+        Task<string> GenerateRefreshToken(int UserId);
         Task<ClaimsPrincipal> GetPrincipalFromExpiredToken(string token);
     }
 }

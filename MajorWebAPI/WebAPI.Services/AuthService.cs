@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPI.Core.DataAccess;
 using WebAPI.Core.Entity;
 using WebAPI.Core.Model;
 using WebAPI.Core.Service;
@@ -18,17 +19,31 @@ namespace WebAPI.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _Configuration;
-        public AuthService(IConfiguration cnfiguration)
+        private readonly IDataAccessLayer _dataAccessLayer;
+        public AuthService(IConfiguration cnfiguration,IDataAccessLayer dataAccessLayer)
         {
             _Configuration = cnfiguration;
+            _dataAccessLayer = dataAccessLayer;
         }
 
-        public async Task<string> GenerateRefreshToken()
+        public async Task<string> GenerateRefreshToken(int UserId)
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
             {
+
                 rng.GetBytes(randomNumber);
+                double dateadd = Convert.ToDouble(_Configuration["JWT:RefreshTokenExpiryDays"]);
+
+                var userrefreshtoken = new UserRefreshToken
+                {
+                    RefreshToken = Convert.ToBase64String(randomNumber),
+                    RefreshTokenExpiryTime = DateTime.Now.AddDays(dateadd),
+                    UserId = UserId
+                };
+
+                var id = await _dataAccessLayer.Repository<UserRefreshToken>().InsertAsync(userrefreshtoken);
+
                 return Convert.ToBase64String(randomNumber);
             }
         }

@@ -38,38 +38,11 @@ namespace MajorWebAPI.Controllers
 
         }
 
-        [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] TokenRequest request)
+        [HttpPost("RefreshAccessToken")]
+        public async Task<WebAPICommonResponse> Refresh([FromBody] TokenRequest request)
         {
-            var principal = await _authService.GetPrincipalFromExpiredToken(request.AccessToken);
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = new UserModel
-            {
-                UserId=1,
-                UserName="aaa",
-                Password="1111",
-                Role="User",
-                RefreshToken = "s",
-                RefreshTokenExpiryTime = DateTime.Now
-            };
-            //var user = await _authservice.GetUserById(userId);
-            if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
-            {
-                return Unauthorized();
-            }
-
-         //   var newAccessToken = await _authService.GenerateToken(user);
-            var newRefreshToken = await _authService.GenerateRefreshToken();
-
-            var responce = new AuthResponse
-            {
-                UserId = user.UserId.ToString(),
-          //      Token = newAccessToken,
-                RefreshToken = newRefreshToken
-            };
-            //_userService.UpdateUser(user);
-
-            return Ok(responce);
+            var result = await _loginService.RefreshToken(request);
+            return result;
         }
 
     }
