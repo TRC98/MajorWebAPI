@@ -1,4 +1,5 @@
 using MajorWebAPI.Extensions;
+using MajorWebAPI.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -39,6 +40,8 @@ ConfigureService.Configrue(builder.Services,builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
