@@ -1,3 +1,4 @@
+using MajorWebAPI.Extensions.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -5,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace MajorWebAPI.Controllers
 {
     [ApiController]
+    [RequireRoleAttribute("User")]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {

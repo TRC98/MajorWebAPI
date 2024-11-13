@@ -8,6 +8,7 @@ namespace WebAPI.Core.Model
 {
     public static class LoggFilesInformation
     {
-        public static string LogginController = "Login-Information";
+        public static string LogginInformation = "Login-Information";
+        public static string Loggerror = "Login-Error";
     }
 }
