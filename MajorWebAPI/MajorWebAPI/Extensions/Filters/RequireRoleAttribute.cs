@@ -15,12 +15,17 @@ namespace MajorWebAPI.Extensions.Filters
         {
             var user = context.HttpContext.User;
 
-            // Check if the user is authenticated and has the required role
+            var customClaim = user.FindFirst(c => c.Type == "DateOfBirth")?.Value;
+
             if (!user.Identity.IsAuthenticated || !user.IsInRole(_roleName))
             {
                 // Return 403 Forbidden if the check fails
                 context.Result = new ForbidResult();
             }
+        }
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            //base.OnActionExecuted(context);
         }
     }
 }

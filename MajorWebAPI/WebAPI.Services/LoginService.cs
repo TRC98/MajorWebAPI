@@ -41,6 +41,11 @@ namespace WebAPI.Services
                 _logger.LogInformation("{0} || LoginService.UserLogin() method started | User:{1}", LoggFilesInformation.LogginInformation, loginModel.UserName);
                 User user = await _userManagementService.GetUserbyUserName(loginModel.UserName);
 
+                if(user is null)
+                {
+                    return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Notfound, "User does not exist", null);
+                }
+
                 if (user.UserName != loginModel.UserName)
                 {
                     return await _apiresponce.GenerateResponseMessage((int)WebResponseCode.Unathorized, "Invalid credentials", null);
