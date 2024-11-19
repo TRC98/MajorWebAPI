@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MajorWebAPI.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI.DataAccess", "WebAPI.DataAccess\WebAPI.DataAccess.csproj", "{01F6FEA3-5C18-424E-83A2-77C9B4D36C5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI.Services", "WebAPI.Services\WebAPI.Services.csproj", "{D097AD46-2790-423E-A0DA-8A43C2EB38B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI.Services", "WebAPI.Services\WebAPI.Services.csproj", "{D097AD46-2790-423E-A0DA-8A43C2EB38B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackgroundTask", "BackgroundTask\BackgroundTask.csproj", "{6CCEF00E-B69A-46AA-999C-FDD7E9268A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{D097AD46-2790-423E-A0DA-8A43C2EB38B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D097AD46-2790-423E-A0DA-8A43C2EB38B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D097AD46-2790-423E-A0DA-8A43C2EB38B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CCEF00E-B69A-46AA-999C-FDD7E9268A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CCEF00E-B69A-46AA-999C-FDD7E9268A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CCEF00E-B69A-46AA-999C-FDD7E9268A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CCEF00E-B69A-46AA-999C-FDD7E9268A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
